@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RulePack xmlns="xmlns://www.fortifysoftware.com/schema/rules">
+	<RulePackID>F1A89EC0-4E29-42D4-A40A-17527FD54050</RulePackID>
+	<SKU>SKU-GdsJsseApisMisuse</SKU>
+	<Name><![CDATA[GdsJsseApisMisuse]]></Name>
+	<Version>1.0</Version>
+	<Description><![CDATA[]]>
+	</Description>
+	<Rules version="6.10">
+		<RuleDefinitions>
+			<!-- Over-Permissive Hostname Verifier Rules -->
+			<StructuralRule formatVersion="6.10" language="java">
+				<RuleID>762F83B5-D4BD-4D05-AEB0-305F41D166965</RuleID>
+				<VulnKingdom>API Abuse</VulnKingdom>
+				<VulnCategory>SSL</VulnCategory>
+				<VulnSubcategory>Over-Permissive Hostname Verifier</VulnSubcategory>
+				<DefaultSeverity>4.0</DefaultSeverity>
+				<MetaInfo>
+					<Group name="Accuracy">5.0</Group>
+					<Group name="Impact">4.0</Group>
+					<Group name="RemediationEffort">2.0</Group>
+					<Group name="Probability">4.0</Group>
+				</MetaInfo>
+				<Description>
+					<Explanation>The method verify() within the defined custom HostnameVerifier is over-permissive. A host name verifier ensures the host name in the URL to which the client connects matches the host name in the digital certificate that the server sends back as part of the SSL connection. This method always returns "true", thus it will accept any certificate making the application vulnerable to Man-In-The-Middle attacks. </Explanation>
+					<Recommendations>Consider using Java Secure Socket Extension's (JSSE) default HostnameVerifier. When using HttpsURLConnection API, hostname verification is performed by default.</Recommendations>
+				</Description>
+				<Predicate><![CDATA[
+                     Function f: f.name is "verify" and f.enclosingClass.supers contains [Class: name=="javax.net.ssl.HostnameVerifier" ] and f.parameters[0].type.name is "java.lang.String" and f.parameters[1].type.name is "javax.net.ssl.SSLSession" and f.returnType.name is "boolean" and f contains [ReturnStatement r: r.expression.constantValue matches "true"]
+            ]]></Predicate>
+			</StructuralRule>
+
+			<StructuralRule formatVersion="6.10" language="java">
+				<RuleID>E7F61C88-F3F2-410D-90CA-BDCA89C044F6</RuleID>
+				<VulnKingdom>API Abuse</VulnKingdom>
+				<VulnCategory>SSL</VulnCategory>
+				<VulnSubcategory>Over-Permissive Hostname Verifier (HTTPClient)</VulnSubcategory>
+				<DefaultSeverity>4.0</DefaultSeverity>
+				<MetaInfo>
+					<Group name="Accuracy">5.0</Group>
+					<Group name="Impact">4.0</Group>
+					<Group name="RemediationEffort">2.0</Group>
+					<Group name="Probability">4.0</Group>
+				</MetaInfo>
+				<Description>
+					<Explanation>The defined HostnameVerifier is over-permissive. A host name verifier ensures the host name in the URL to which the client connects matches the host name in the digital certificate that the server sends back as part of the SSL connection. The specified HostnameVerifier will accept any certificate making the application vulnerable to Man-In-The-Middle attacks. </Explanation>
+					<Recommendations>Consider using Apache HTTP Client's BrowserCompatHostnameVerifier or StrictHostnameVerifier.</Recommendations>
+				</Description>
+				<Predicate><![CDATA[
+                    FunctionCall : (function.name is "SSLConnectionSocketFactory" or function.name is "setHostnameVerifier" or function.name is "setSSLHostnameVerifier") and (arguments[0].type.name matches "org.apache.http.conn.ssl.AllowAllHostnameVerifier" or arguments[0].type.name matches "org.apache.http.conn.ssl.NoopHostnameVerifier" or arguments[1].type.name matches "org.apache.http.conn.ssl.AllowAllHostnameVerifier" or arguments[1].type.name matches "org.apache.http.conn.ssl.NoopHostnameVerifier" or arguments[3].type.name matches "org.apache.http.conn.ssl.AllowAllHostnameVerifier" or arguments[3].type.name matches "org.apache.http.conn.ssl.NoopHostnameVerifier" or arguments[5].type.name matches "org.apache.http.conn.ssl.AllowAllHostnameVerifier" or arguments[5].type.name matches "org.apache.http.conn.ssl.NoopHostnameVerifier" )
+            ]]></Predicate>
+			</StructuralRule>
+
+			<StructuralRule formatVersion="6.10" language="java">
+				<RuleID>E7F61C88-F4F2-410D-90CA-BDCA89C044F6</RuleID>
+				<VulnKingdom>API Abuse</VulnKingdom>
+				<VulnCategory>SSL</VulnCategory>
+				<VulnSubcategory>Over-Permissive Hostname Verifier (HTTPClient)</VulnSubcategory>
+				<DefaultSeverity>4.0</DefaultSeverity>
+				<MetaInfo>
+					<Group name="Accuracy">5.0</Group>
+					<Group name="Impact">4.0</Group>
+					<Group name="RemediationEffort">2.0</Group>
+					<Group name="Probability">4.0</Group>
+				</MetaInfo>
+				<Description>
+					<Explanation>The defined HostnameVerifier is over-permissive. A host name verifier ensures the host name in the URL to which the client connects matches the host name in the digital certificate that the server sends back as part of the SSL connection. The specified HostnameVerifier will accept any certificate making the application vulnerable to Man-In-The-Middle attacks. </Explanation>
+					<Recommendations>Consider using Apache HTTP Client's default hostname verifiers such as BrowserCompatHostnameVerifier or StrictHostnameVerifier.</Recommendations>
+				</Description>
+				<Predicate><![CDATA[
+                    FieldAccess : field.name is "ALLOW_ALL_HOSTNAME_VERIFIER"
+            ]]></Predicate>
+			</StructuralRule>
+
+			<!-- Over-Permissive Trust Manager Rules -->
+			<StructuralRule formatVersion="6.10" language="java">
+				<RuleID>E7F61C88-C3F2-410D-90CA-BCCA89F044F6</RuleID>
+				<MetaInfo>
+					<Group name="Accuracy">5.0</Group>
+					<Group name="Impact">4.0</Group>
+					<Group name="RemediationEffort">1.0</Group>
+					<Group name="Probability">4.0</Group>
+				</MetaInfo>
+				<VulnKingdom>API Abuse</VulnKingdom>
+				<VulnCategory>SSL</VulnCategory>
+				<VulnSubcategory>Over-Permissive Trust Manager</VulnSubcategory>
+				<DefaultSeverity>4.0</DefaultSeverity>
+				<Description>
+					<Explanation>The method checkServerTrusted within the defined custom TrustManager is over-permissive. This method is used to build a certificate path to a trusted certificate root and return if it can be validated. The validation will fail when:
+						- the root CA is not trusted;
+						- an invalid signature is found;
+						- the certificate validity dates are expired.
+					Since the specified checkServerTrusted method does never throw a CertificateException, it will accept any certificate as valid thus making the application vulnerable to Man-In-The-Middle attacks.</Explanation>
+					<Recommendations>Consider using Java Secure Socket Extension's (JSSE) default TrustManager.</Recommendations>
+				</Description>
+				<Predicate><![CDATA[
+                    Function f: f.name is "checkServerTrusted" and f.parameters[0].type.name is "java.security.cert.X509Certificate" and f.parameters[1].type.name is "java.lang.String" and f.returnType.name is "void" and not f contains [ThrowStatement t: t.expression.type.definition.supers contains [Class: name =="(javax.security.cert.CertificateException|java.security.cert.CertificateException)"]] 
+            ]]></Predicate>
+			</StructuralRule>
+			<StructuralRule formatVersion="6.10" language="java">
+				<RuleID>E7F61C88-C3F2-410D-90CA-BCCA89C044F6</RuleID>
+				<MetaInfo>
+					<Group name="Accuracy">5.0</Group>
+					<Group name="Impact">4.0</Group>
+					<Group name="RemediationEffort">1.0</Group>
+					<Group name="Probability">4.0</Group>
+				</MetaInfo>
+				<VulnKingdom>API Abuse</VulnKingdom>
+				<VulnCategory>SSL</VulnCategory>
+				<VulnSubcategory>Over-Permissive Trust Manager (HTTPClient)</VulnSubcategory>
+				<DefaultSeverity>4.0</DefaultSeverity>
+				<Description>
+					<Explanation>The method isTrusted within the defined custom TrustStrategy is over-permissive. This method is used to build a certificate path to a trusted certificate root and return if it can be validated. The validation will fail when:
+						- the root CA is not trusted;
+						- an invalid signature is found;
+						- the certificate validity dates are expired.
+					Since the specified isTrusted method always returns true, it will accept any certificate as valid thus making the application vulnerable to Man-In-The-Middle attacks.</Explanation>
+					<Recommendations>Consider using Apache HTTPClient's default TrustStrategy.</Recommendations>
+				</Description>
+				<Predicate><![CDATA[
+                      Function f: f.name is "isTrusted" and f.parameters[0].type.name is "java.security.cert.X509Certificate" and f.parameters[1].type.name is "java.lang.String" and f.enclosingClass.supers contains [Class: name=="org.apache.http.conn.ssl.TrustStrategy"] and f.returnType.name is "boolean" and f contains [ReturnStatement r: r.expression.constantValue matches "true"]
+            ]]></Predicate>
+			</StructuralRule>
+
+			<!-- MISSING HOSTNAME VERIFICATION RULES -->
+
+			<DataflowSourceRule formatVersion="6.10" language="java">
+				<RuleID>959915DD-8F22-45B4-A5D5-81302ECE8880</RuleID>
+				<TaintFlags>+SSLHOSTNAME</TaintFlags>
+				<FunctionIdentifier>
+					<NamespaceName>
+						<Pattern>javax.net</Pattern>
+					</NamespaceName>
+					<ClassName>
+						<Pattern>SocketFactory</Pattern>
+					</ClassName>
+					<FunctionName>
+						<Pattern>createSocket</Pattern>
+					</FunctionName>
+					<ApplyTo implements="true" overrides="true" extends="true" />
+				</FunctionIdentifier>
+				<OutArguments>return</OutArguments>
+			</DataflowSourceRule>
+			<DataflowSinkRule formatVersion="6.10" language="java">
+				<DefaultSeverity>4.0</DefaultSeverity>
+				<VulnKingdom>API Abuse</VulnKingdom>
+				<VulnCategory>SSL</VulnCategory>
+				<VulnSubcategory>Missing Hostname Verification</VulnSubcategory>
+				<Description>
+					<Explanation>In SSL clients created using SSLSocketFactory (as opposed to HttpsClient or HttpsURLConnection wrappers), JSSE does not automatically verify that the hostname in a URL matches the hostname in the peer’s credentials.</Explanation>
+					<Recommendations>When using SSLSocket or SSLEngine, the responsibility for hostname verification is delegated to the software running on top of JSSE. Developers should set the endpoint algorithm as "HTTPS".	
+
+						SSLSocketFactory factory = 	(SSLSocketFactory)SSLSocketFactory.getDefault();
+						SSLSocket socket = 	(SSLSocket)factory.createSocket(url.getHost(), 443);
+	
+						SSLParameters params = socket.getSSLParameters();
+					    params.setEndpointIdentificationAlgorithm("HTTPS");
+					    socket.setSSLParameters(params);</Recommendations>
+				</Description>
+				<MetaInfo>
+					<Group name="Accuracy">5.0</Group>
+					<Group name="Impact">4.0</Group>
+					<Group name="RemediationEffort">1.0</Group>
+					<Group name="Probability">5.0</Group>
+				</MetaInfo>
+				<RuleID>6109EFE5-3043-47F1-8F11-E60229266C84</RuleID>
+				<Sink>
+					<InArguments>this</InArguments>
+					<Conditional>
+						<Not>
+							<TaintFlagSet taintFlag="SSLHOSTNAME_VALIDATED" />
+						</Not>
+					</Conditional>
+				</Sink>
+				<FunctionIdentifier>
+					<NamespaceName>
+						<Pattern>java.net</Pattern>
+					</NamespaceName>
+					<ClassName>
+						<Pattern>Socket</Pattern>
+					</ClassName>
+					<FunctionName>
+						<Pattern>getOutputStream|getInputStream</Pattern>
+					</FunctionName>
+					<ApplyTo implements="true" overrides="true" extends="true" />
+				</FunctionIdentifier>
+			</DataflowSinkRule>
+			<DataflowCleanseRule formatVersion="6.10"
+				language="java">
+				<RuleID>CEAA3515-FD83-4BAF-B016-3C7B5B23D66C</RuleID>
+				<FunctionIdentifier>
+					<NamespaceName>
+						<Pattern>javax.net.ssl</Pattern>
+					</NamespaceName>
+					<ClassName>
+						<Pattern>SSLSocket</Pattern>
+					</ClassName>
+					<FunctionName>
+						<Pattern>setSSLParameters</Pattern>
+					</FunctionName>
+					<ApplyTo implements="true" overrides="true" extends="true" />
+				</FunctionIdentifier>
+				<TaintFlags>+SSLHOSTNAME_VALIDATED</TaintFlags>
+				<OutArguments>this</OutArguments>
+			</DataflowCleanseRule>
+			<StructuralRule formatVersion="6.10" language="java">
+				<RuleID>762F81B5-D4BD-4D05-AEB0-305F41D166961</RuleID>
+				<MetaInfo>
+					<Group name="Accuracy">5.0</Group>
+					<Group name="Impact">4.0</Group>
+					<Group name="RemediationEffort">1.0</Group>
+					<Group name="Probability">5.0</Group>
+				</MetaInfo>
+				<VulnKingdom>API Abuse</VulnKingdom>
+				<VulnCategory>SSL</VulnCategory>
+				<VulnSubcategory>Missing Hostname Verification</VulnSubcategory>
+				<DefaultSeverity>4.0</DefaultSeverity>
+				<Description>
+				<Explanation>In SSL clients created using SSLSocketFactory (as opposed to HttpsClient or HttpsURLConnection wrappers), Java Secure Socket Extension (JSSE) does not automatically verify that the hostname in a URL matches the hostname in the peer’s credentials.</Explanation>
+				<Recommendations>When using SSLSocket or SSLEngine, the responsibility for hostname verification is delegated to the software running on top of JSSE. Developers should set the endpoint algorithm as "HTTPS".	
+
+						SSLSocketFactory factory = 	(SSLSocketFactory)SSLSocketFactory.getDefault();
+						SSLSocket socket = 	(SSLSocket)factory.createSocket(url.getHost(), 443);
+	
+						SSLParameters params = socket.getSSLParameters();
+					    params.setEndpointIdentificationAlgorithm("HTTPS");
+					    socket.setSSLParameters(params);</Recommendations>
+				</Description>
+				<Predicate><![CDATA[
+                    FunctionCall call : call.name is "setSSLParameters" and call.arguments[0].type.name is "javax.net.ssl.SSLParameters" and call.instance.type.name is "javax.net.ssl.SSLSocket" and not call.enclosingFunction contains [FunctionCall funCall : funCall.name is "setEndpointIdentificationAlgorithm" and (funCall.arguments[0].constantValue is ("HTTPS") or funCall.arguments[0].constantValue is ("LDAP") or funCall.arguments[0].constantValue is ("LDAPS"))]
+            	]]></Predicate>
+			</StructuralRule>
+			<!-- OFTEN MISUSED RULES -->
+			<StructuralRule formatVersion="6.10" language="java">
+				<RuleID>762F83B5-D4BD-4D05-AEB0-305F41D166961</RuleID>
+				<MetaInfo>
+					<Group name="Accuracy">4.0</Group>
+					<Group name="Impact">2.0</Group>
+					<Group name="RemediationEffort">1.0</Group>
+					<Group name="Probability">4.0</Group>
+				</MetaInfo>
+				<VulnKingdom>API Abuse</VulnKingdom>
+				<VulnCategory>SSL</VulnCategory>
+				<VulnSubcategory>Often Misused: Custom HostnameVerifier	</VulnSubcategory>
+				<DefaultSeverity>3.0</DefaultSeverity>
+				<Description>
+					<Explanation>A custom hostname verifier was defined.</Explanation>
+					<Recommendations>Review if the specified hostname verifier meets the Application's security requirements. Consider using Java Secure Socket Extension's (JSSE) default HostnameVerifier.
+					</Recommendations>
+				</Description>
+				<Predicate><![CDATA[
+                    FunctionCall : function.name is "setDefaultHostnameVerifier" and arguments[0].type.name is "javax.net.ssl.HostnameVerifier"
+            ]]></Predicate>
+			</StructuralRule>
+			<StructuralRule formatVersion="6.10" language="java">
+				<RuleID>E7F61C88-A3F2-410D-90CA-BCCA89C044F6</RuleID>
+				<MetaInfo>
+					<Group name="Accuracy">4.0</Group>
+					<Group name="Impact">2.0</Group>
+					<Group name="RemediationEffort">1.0</Group>
+					<Group name="Probability">4.0</Group>
+				</MetaInfo>
+				<VulnKingdom>API Abuse</VulnKingdom>
+				<VulnCategory>SSL</VulnCategory>
+				<VulnSubcategory>Often Misused: Custom HostnameVerifier (HTTPClient)</VulnSubcategory>
+				<DefaultSeverity>3.0</DefaultSeverity>
+				<Description>
+					<Explanation>A custom hostname verifier was defined.</Explanation>
+					<Recommendations>Review if the specified hostname verifier meets the Application's security requirements. Consider using Apache HTTP Client's default hostname verifiers such as BrowserCompatHostnameVerifier or StrictHostnameVerifier.</Recommendations>
+				</Description>
+				<Predicate><![CDATA[
+                    FunctionCall : function.name is "setHostnameVerifier" or function.name is "setSSLHostnameVerifier" and arguments[0].type.name matches "org.apache.http.conn.ssl.X509HostnameVerifier" 
+            ]]></Predicate>
+			</StructuralRule>
+			<StructuralRule formatVersion="6.10" language="java">
+				<RuleID>762F83B5-D4BD-4D05-AEB0-305F41D156961</RuleID>
+				<MetaInfo>
+					<Group name="Accuracy">4.0</Group>
+					<Group name="Impact">2.0</Group>
+					<Group name="RemediationEffort">1.0</Group>
+					<Group name="Probability">4.0</Group>
+				</MetaInfo>
+				<VulnKingdom>API Abuse</VulnKingdom>
+				<VulnCategory>SSL</VulnCategory>
+				<VulnSubcategory>Often Misused: Custom SSLSocketFactory
+				</VulnSubcategory>
+				<DefaultSeverity>4.0</DefaultSeverity>
+				<Description>
+					<Explanation>A custom SSLSocketFactory was defined.</Explanation>
+					<Recommendations>Review if the specified SSLSocketFactory meets the Application's security requirements. Consider using Java's default SSLSocketFactory.
+					</Recommendations>
+				</Description>
+				<Predicate><![CDATA[
+                    FunctionCall : function.name is "setDefaultSSLSocketFactory" and arguments[0].type.name is "javax.net.ssl.SSLSocketFactory"
+            ]]></Predicate>
+			</StructuralRule>
+		</RuleDefinitions>
+	</Rules>
+</RulePack>
